@@ -1,0 +1,19 @@
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+
+# Mac/Linux system files
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/
+
+# Optional npm debug log
+npm-debug.log*
