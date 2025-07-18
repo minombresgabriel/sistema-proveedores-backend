@@ -49,11 +49,14 @@ const login = async (req, res) => {
     if (user.rol === "user") {
       // Verificar si ya tiene asistencia hoy
       const hoy = new Date();
-      hoy.setHours(0, 0, 0, 0); // inicio del día
+      hoy.setHours(0, 0, 0, 0); // Inicio del día
+
+      const finDelDia = new Date();
+      finDelDia.setHours(23, 59, 59, 999); // Fin del día
 
       const yaRegistrado = await Asistencia.findOne({
         usuario: user._id,
-        fecha: { $gte: hoy },
+        fecha: { $gte: hoy, $lte: finDelDia },
       });
 
       if (!yaRegistrado) {
