@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { DateTime } = require("luxon");
 
 const Asistencia = require("../models/Asistencia"); // importar modelo
 
@@ -47,12 +48,9 @@ const login = async (req, res) => {
 
     // Solo registrar asistencia si es usuario normal
     if (user.rol === "user") {
-      // Verificar si ya tiene asistencia hoy
-      const hoy = new Date();
-      hoy.setHours(0, 0, 0, 0); // Inicio del día
-
-      const finDelDia = new Date();
-      finDelDia.setHours(23, 59, 59, 999); // Fin del día
+      // Usar zona UTC siempre para evitar problemas
+      const hoy = DateTime.utc().startOf("day").toJSDate();
+      const finDelDia = DateTime.utc().endOf("day").toJSDate();
 
       const yaRegistrado = await Asistencia.findOne({
         usuario: user._id,
@@ -60,7 +58,7 @@ const login = async (req, res) => {
       });
 
       if (!yaRegistrado) {
-        await Asistencia.create({ usuario: user._id });
+        await Asistencia.create({ usuario: user._id, fecha: new Date() });
       }
     }
 
